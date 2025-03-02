@@ -5,35 +5,38 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 
-public class SquareClient {
-    private static final String HOST = "localhost";
+public class GuessNumberClient {
     private static final int PORT = 60000;
+    private static final String HOST = "localhost";
 
     public static void main(String[] args) {
         try (
                 var socket = new Socket(HOST, PORT);
+                var scanner = new Scanner(System.in);
                 var in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 var out = new PrintWriter(socket.getOutputStream(), true);
-                var scanner = new Scanner(System.in);
                 ) {
-
-            System.out.println("Connected to Square server!");
-
-            System.out.println(in.readLine());
-            System.out.println(in.readLine());
-
-            String number;
+            String command;
             while (true) {
-                System.out.print("> ");
-                number = scanner.nextLine();
-                out.println(number);
+                command = scanner.nextLine();
+                out.println(command);
 
-                if (number.equalsIgnoreCase("exit")) break;
+                String response = in.readLine();
 
-                System.out.println(in.readLine());
+                if (response == null) {
+                    return;
+                }
+
+                if ("QUIT".equalsIgnoreCase(response)) {
+                    return;
+                }
             }
+
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

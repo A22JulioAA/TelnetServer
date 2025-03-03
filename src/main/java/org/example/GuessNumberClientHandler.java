@@ -8,6 +8,9 @@ import java.net.Socket;
 
 public class GuessNumberClientHandler implements Runnable {
     private final Socket clientSocket;
+    private static boolean isPlaying = false;
+
+
 
     public GuessNumberClientHandler(Socket clientSocket) {
         this.clientSocket = clientSocket;
@@ -19,11 +22,15 @@ public class GuessNumberClientHandler implements Runnable {
                 var in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
                 var out = new PrintWriter(clientSocket.getOutputStream(), true);
                 ) {
+            // Game server ready message.
+            out.println("10 Number game server ready");
+
+            // Read client command.
             String command;
             while ((command = in.readLine()) != null) {
                 switch (command.toUpperCase()) {
                     case "NEW":
-                        System.out.println("Nuevo juego");
+                        startGame(out);
                         break;
                     case "NUM":
                         System.out.println("Numero");
@@ -59,5 +66,13 @@ public class GuessNumberClientHandler implements Runnable {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static void startGame (PrintWriter out) {
+        if (isPlaying) {
+            out.println("80 ERR");
+            return;
+        }
+
     }
 }

@@ -19,6 +19,8 @@ public class GuessNumberClient {
                 var in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 var out = new PrintWriter(socket.getOutputStream(), true);
                 ) {
+            System.out.println(in.readLine());
+
             String command;
             while (true) {
                 command = scanner.nextLine();
